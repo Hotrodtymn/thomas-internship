@@ -7,7 +7,7 @@ const TopSellers = () => {
 
   useEffect(() => {
     fetch(
-      "https://us-central1-nft-cloud-functions.cloudfunctions.net/topSellers"
+      "https://us-central1-nft-cloud-functions.cloudfunctions.net/topSellers",
     )
       .then((response) => {
         if (!response.ok) {
@@ -40,7 +40,6 @@ const TopSellers = () => {
           </div>
 
           <div className="col-md-12">
-          
             {loading && (
               <ol className="author_list">
                 {new Array(12).fill(0).map((_, index) => (
@@ -87,7 +86,6 @@ const TopSellers = () => {
               </ol>
             )}
 
-         
             {!loading && sellers.length > 0 && (
               <ol className="author_list">
                 {sellers.map((seller) => (
@@ -117,7 +115,6 @@ const TopSellers = () => {
               </ol>
             )}
 
-          
             {!loading && sellers.length === 0 && (
               <div className="text-center">
                 <p>No top sellers found.</p>

@@ -1,10 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SubHeader from "../images/subheader.jpg";
 import ExploreItems from "../components/explore/ExploreItems";
 
 const Explore = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    fetch(
+      "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore"
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch Explore items");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Explore:", data);
+
+        setItems(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Explore Error:", error);
+        setLoading(false);
+      });
   }, []);
 
   return (
@@ -23,6 +47,7 @@ const Explore = () => {
                 <div className="col-md-12 text-center">
                   <h1>Explore</h1>
                 </div>
+
                 <div className="clearfix"></div>
               </div>
             </div>
@@ -32,7 +57,10 @@ const Explore = () => {
         <section aria-label="section">
           <div className="container">
             <div className="row">
-              <ExploreItems />
+              <ExploreItems
+                items={items}
+                loading={loading}
+              />
             </div>
           </div>
         </section>
