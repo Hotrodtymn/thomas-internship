@@ -35,7 +35,7 @@ const HotCollections = () => {
 
   useEffect(() => {
     fetch(
-      "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
+      "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections",
     )
       .then((response) => {
         if (!response.ok) {
@@ -66,7 +66,6 @@ const HotCollections = () => {
     <section id="section-collections" className="no-bottom">
       <div className="container">
         <div className="row">
-
           <div className="col-lg-12">
             <div className="text-center">
               <h2>Hot Collections</h2>
@@ -77,12 +76,8 @@ const HotCollections = () => {
           {/* SKELETON LOADING */}
           {loading &&
             new Array(6).fill(0).map((_, index) => (
-              <div
-                className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
-                key={index}
-              >
+              <div className="col-lg-3 col-md-6 col-sm-6 col-xs-12" key={index}>
                 <div className="nft_coll">
-
                   <div
                     className="nft_wrap"
                     style={{
@@ -133,7 +128,6 @@ const HotCollections = () => {
                       }}
                     ></div>
                   </div>
-
                 </div>
               </div>
             ))}
@@ -142,46 +136,27 @@ const HotCollections = () => {
           {!loading && (
             <div className="col-lg-12">
               <div ref={sliderRef} className="keen-slider">
-
                 {collections.map((collection) => (
-                  <div
-                    className="keen-slider__slide"
-                    key={collection.id}
-                  >
+                  <div className="keen-slider__slide" key={collection.id}>
                     <div className="nft_coll">
-
                       {/* NFT IMAGE */}
                       <div className="nft_wrap">
                         <Link to="/item-details">
                           <img
-                            src={
-                              collection.nftImage ||
-                              nftImage
-                            }
+                            src={collection.nftImage || nftImage}
                             className="lazy img-fluid"
-                            alt={
-                              collection.title ||
-                              "NFT"
-                            }
+                            alt={collection.title || "NFT"}
                           />
                         </Link>
                       </div>
 
-                      {/* AUTHOR IMAGE */}
+                      {/* authorImage */}
                       <div className="nft_coll_pp">
-                        <Link
-                          to={`/author/${collection.authorId}`}
-                        >
+                        <Link to={`/author/${collection.authorId}`}>
                           <img
                             className="lazy pp-coll"
-                            src={
-                              collection.authorImage ||
-                              AuthorImage
-                            }
-                            alt={
-                              collection.title ||
-                              "Author"
-                            }
+                            src={collection.authorImage || AuthorImage}
+                            alt={collection.title || "Author"}
                           />
                         </Link>
 
@@ -190,27 +165,18 @@ const HotCollections = () => {
 
                       {/* COLLECTION INFO */}
                       <div className="nft_coll_info">
-
                         <Link to="/explore">
-                          <h4>
-                            {collection.title}
-                          </h4>
+                          <h4>{collection.title}</h4>
                         </Link>
 
-                        <span>
-                          ERC-{collection.code}
-                        </span>
-
+                        <span>ERC-{collection.code}</span>
                       </div>
-
                     </div>
                   </div>
                 ))}
-
               </div>
             </div>
           )}
-
         </div>
       </div>
 

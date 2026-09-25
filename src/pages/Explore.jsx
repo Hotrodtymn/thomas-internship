@@ -1,36 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import SubHeader from "../images/subheader.jpg";
 import ExploreItems from "../components/explore/ExploreItems";
 
 const Explore = () => {
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    const getExploreItems = async () => {
-      try {
-        setLoading(true);
-
-        const response = await fetch(
-          "https://us-central1-nft-cloud-functions.cloudfunctions.net/explore"
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch explore items");
-        }
-
-        const data = await response.json();
-
-        console.log("Explore API:", data);
-
-        setItems(data);
-      } catch (error) {
-        console.error("Explore API Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getExploreItems();
+    window.scrollTo(0, 0);
   }, []);
 
   return (
@@ -38,32 +12,32 @@ const Explore = () => {
       <div className="no-bottom no-top" id="content">
         <div id="top"></div>
 
-        {/* Explore Header */}
         <section
-          aria-label="section"
-          className="mt90 sm-mt-0"
-          data-aos="fade-up"
+          id="subheader"
+          className="text-light"
+          style={{
+            background: `url("${SubHeader}") top`,
+          }}
+          data-aos="fade-in"
         >
-          <div className="container">
-            <div className="row">
-              <div className="col-md-12">
-                <h2>Explore</h2>
+          <div className="center-y relative text-center">
+            <div className="container">
+              <div className="row">
+                <div className="col-md-12 text-center">
+                  <h1 data-aos="fade-up" data-aos-delay="100">
+                    Explore
+                  </h1>
+                </div>
+
+                <div className="clearfix"></div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Explore Items */}
         <section aria-label="section">
-          <div
-            className="container"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
-            <ExploreItems
-              items={items}
-              loading={loading}
-            />
+          <div className="container" data-aos="fade-up" data-aos-delay="200">
+            <ExploreItems />
           </div>
         </section>
       </div>

@@ -1,57 +1,50 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import BrowseByCategory from "../components/home/BrowseByCategory";
 import HotCollections from "../components/home/HotCollections";
+import Landing from "../components/home/Landing";
+import LandingIntro from "../components/home/LandingIntro";
 import NewItems from "../components/home/NewItems";
 import TopSellers from "../components/home/TopSellers";
 
 const Home = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
         <div id="top"></div>
 
-        {/* Hero */}
-        <section
-          aria-label="section"
-          className="no-top no-bottom"
-          data-aos="fade-up"
-        >
-          <div className="container">
-            {/* Keep your existing Home hero content here */}
-          </div>
-        </section>
+        {/* Landing */}
+        <div data-aos="fade-up">
+          <Landing />
+        </div>
+
+        {/* Landing Intro */}
+        <div data-aos="fade-up" data-aos-delay="100">
+          <LandingIntro />
+        </div>
 
         {/* Hot Collections */}
-        <section aria-label="section">
-          <div
-            className="container"
-            data-aos="fade-up"
-          >
-            <HotCollections />
-          </div>
-        </section>
+        <div data-aos="fade-up" data-aos-delay="150">
+          <HotCollections />
+        </div>
 
         {/* New Items */}
-        <section aria-label="section">
-          <div
-            className="container"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
-            <NewItems />
-          </div>
-        </section>
+        <div data-aos="fade-up" data-aos-delay="200">
+          <NewItems />
+        </div>
 
         {/* Top Sellers */}
-        <section aria-label="section">
-          <div
-            className="container"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            <TopSellers />
-          </div>
-        </section>
+        <div data-aos="fade-up" data-aos-delay="250">
+          <TopSellers />
+        </div>
+
+        {/* Browse By Category */}
+        <div data-aos="fade-up" data-aos-delay="300">
+          <BrowseByCategory />
+        </div>
       </div>
     </div>
   );
