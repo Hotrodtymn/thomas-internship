@@ -27,118 +27,106 @@ const ItemDetails = () => {
         let selectedItem = null;
         let selectedAuthor = null;
 
-        /*
-         * 1. Check New Items
-         */
+        // New Items
         const newItemsResponse = await fetch(
-          "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems",
+          "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems"
         );
 
         if (newItemsResponse.ok) {
-          const newItems = await newItemsResponse.json();
-
-          console.log("New Items API:", newItems);
+          const newItems =
+            await newItemsResponse.json();
 
           selectedItem = newItems.find(
-            (nft) => String(nft.nftId) === String(id),
+            (nft) =>
+              String(nft.nftId) === String(id)
           );
 
           if (selectedItem) {
-            console.log("NFT found in New Items:", selectedItem);
+            console.log(
+              "NFT found in New Items:",
+              selectedItem
+            );
           }
         }
 
-        /*
-         * 2. Check Hot Collections
-         */
+        // Hot Collections
         if (!selectedItem) {
-          const collectionsResponse = await fetch(
-            "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections",
-          );
+          const collectionsResponse =
+            await fetch(
+              "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
+            );
 
           if (collectionsResponse.ok) {
-            const collections = await collectionsResponse.json();
-
-            console.log("Hot Collections API:", collections);
+            const collections =
+              await collectionsResponse.json();
 
             selectedItem = collections.find(
-              (nft) => String(nft.nftId) === String(id),
+              (nft) =>
+                String(nft.nftId) ===
+                String(id)
             );
 
             if (selectedItem) {
-              console.log("NFT found in Hot Collections:", selectedItem);
+              console.log(
+                "NFT found in Hot Collections:",
+                selectedItem
+              );
             }
           }
         }
 
-        /*
-         * 3. Check Author Collection
-         *
-         * This supports NFTs coming directly from
-         * the Author page.
-         */
+        // Author collection
         if (!selectedItem) {
-          const authorResponse = await fetch(
-            "https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=73855012",
-          );
+          const authorResponse =
+            await fetch(
+              "https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=73855012"
+            );
 
           if (authorResponse.ok) {
-            const authorData = await authorResponse.json();
+            const authorData =
+              await authorResponse.json();
 
-            console.log("Author API:", authorData);
-
-            const authorItem = authorData.nftCollection?.find(
-              (nft) => String(nft.nftId) === String(id),
-            );
+            const authorItem =
+              authorData.nftCollection?.find(
+                (nft) =>
+                  String(nft.nftId) ===
+                  String(id)
+              );
 
             if (authorItem) {
               selectedItem = authorItem;
               selectedAuthor = authorData;
-
-              console.log("NFT found in Author Collection:", authorItem);
             }
           }
         }
 
-        /*
-         * Stop if NFT cannot be found.
-         */
         if (!selectedItem) {
-          console.log("NFT not found:", id);
+          console.log(
+            "NFT not found:",
+            id
+          );
+
           setLoading(false);
           return;
         }
 
-        /*
-         * Save the NFT.
-         */
         setItem(selectedItem);
 
-        /*
-         * If we already found the author,
-         * use that author.
-         */
         if (selectedAuthor) {
           setAuthor(selectedAuthor);
           setLoading(false);
           return;
         }
 
-        /*
-         * If the NFT contains an authorId,
-         * fetch that specific author.
-         */
         if (selectedItem.authorId) {
-          console.log("Fetching author:", selectedItem.authorId);
-
-          const authorResponse = await fetch(
-            `https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${selectedItem.authorId}`,
-          );
+          const authorResponse =
+            await fetch(
+              `https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${selectedItem.authorId}`
+            );
 
           if (authorResponse.ok) {
-            const authorData = await authorResponse.json();
-
-            console.log("NFT Author API:", authorData);
+            const authorData =
+              await authorResponse.json();
 
             setAuthor(authorData);
           }
@@ -146,7 +134,10 @@ const ItemDetails = () => {
 
         setLoading(false);
       } catch (error) {
-        console.error("Item Details API Error:", error);
+        console.error(
+          "Item Details API Error:",
+          error
+        );
 
         setLoading(false);
       }
@@ -159,14 +150,17 @@ const ItemDetails = () => {
     }
   }, [id]);
 
-  /*
-   * Loading
-   */
   if (loading) {
     return (
       <div id="wrapper">
-        <div className="no-bottom no-top" id="content">
-          <section aria-label="section" className="mt90 sm-mt-0">
+        <div
+          className="no-bottom no-top"
+          id="content"
+        >
+          <section
+            aria-label="section"
+            className="mt90 sm-mt-0"
+          >
             <div className="container text-center">
               <h2>Loading...</h2>
             </div>
@@ -176,18 +170,23 @@ const ItemDetails = () => {
     );
   }
 
-  /*
-   * NFT not found
-   */
   if (!item) {
     return (
       <div id="wrapper">
-        <div className="no-bottom no-top" id="content">
-          <section aria-label="section" className="mt90 sm-mt-0">
+        <div
+          className="no-bottom no-top"
+          id="content"
+        >
+          <section
+            aria-label="section"
+            className="mt90 sm-mt-0"
+          >
             <div className="container text-center">
               <h2>NFT not found</h2>
 
-              <p>NFT ID being requested:</p>
+              <p>
+                NFT ID being requested:
+              </p>
 
               <strong>{id}</strong>
             </div>
@@ -197,64 +196,99 @@ const ItemDetails = () => {
     );
   }
 
-  /*
-   * Author information
-   */
-  const authorId = author?.authorId || item.authorId;
+  const authorId =
+    author?.authorId ||
+    item.authorId;
 
-  const authorName = author?.authorName || "Unknown Author";
+  const authorName =
+    author?.authorName ||
+    "Unknown Author";
 
-  const authorImage = author?.authorImage || AuthorImage;
+  const authorImage =
+    author?.authorImage ||
+    AuthorImage;
 
   return (
     <div id="wrapper">
-      <div className="no-bottom no-top" id="content">
+      <div
+        className="no-bottom no-top"
+        id="content"
+      >
         <div id="top"></div>
 
-        <section aria-label="section" className="mt90 sm-mt-0">
+        <section
+          aria-label="section"
+          className="mt90 sm-mt-0"
+        >
           <div className="container">
             <div className="row">
-              {/* NFT IMAGE */}
-              <div className="col-md-6 text-center">
+
+              {/* NFT Image */}
+              <div
+                className="col-md-6 text-center"
+                data-aos="fade-right"
+              >
                 <img
-                  src={item.nftImage || nftImage}
+                  src={
+                    item.nftImage ||
+                    nftImage
+                  }
                   className="img-fluid img-rounded mb-sm-30 nft-image"
-                  alt={item.title || "NFT"}
+                  alt={
+                    item.title ||
+                    "NFT"
+                  }
                 />
               </div>
 
-              {/* NFT INFORMATION */}
-              <div className="col-md-6">
+              {/* NFT Information */}
+              <div
+                className="col-md-6"
+                data-aos="fade-left"
+              >
                 <div className="item_info">
-                  {/* TITLE */}
-                  <h2>{item.title}</h2>
 
-                  {/* COUNTS */}
+                  <h2>
+                    {item.title}
+                  </h2>
+
                   <div className="item_info_counts">
+
                     <div className="item_info_views">
-                      <i className="fa fa-eye"></i>0
+                      <i className="fa fa-eye"></i>
+                      0
                     </div>
 
                     <div className="item_info_like">
                       <i className="fa fa-heart"></i>
                       {item.likes || 0}
                     </div>
+
                   </div>
 
-                  {/* DESCRIPTION */}
                   <p>
-                    {item.title} is part of the {authorName} NFT collection.
+                    {item.title} is part of the{" "}
+                    {authorName} NFT collection.
                   </p>
 
-                  {/* OWNER */}
-                  <div className="d-flex flex-row">
+                  {/* Owner */}
+                  <div
+                    className="d-flex flex-row"
+                    data-aos="fade-up"
+                  >
                     <div className="mr40">
+
                       <h6>Owner</h6>
 
                       <div className="item_author">
+
                         <div className="author_list_pp">
                           <Link
-                            to={authorId ? `/author/${authorId}` : "/author"}
+                            to={
+                              authorId
+                                ? `/author/${authorId}`
+                                : "/author"
+                            }
                           >
                             <img
                               className="lazy"
@@ -268,24 +302,39 @@ const ItemDetails = () => {
 
                         <div className="author_list_info">
                           <Link
-                            to={authorId ? `/author/${authorId}` : "/author"}
+                            to={
+                              authorId
+                                ? `/author/${authorId}`
+                                : "/author"
+                            }
                           >
                             {authorName}
                           </Link>
                         </div>
+
                       </div>
                     </div>
                   </div>
 
-                  {/* CREATOR */}
+                  {/* Creator */}
                   <div className="de_tab tab_simple">
-                    <div className="de_tab_content">
+
+                    <div
+                      className="de_tab_content"
+                      data-aos="fade-up"
+                      data-aos-delay="100"
+                    >
                       <h6>Creator</h6>
 
                       <div className="item_author">
+
                         <div className="author_list_pp">
                           <Link
-                            to={authorId ? `/author/${authorId}` : "/author"}
+                            to={
+                              authorId
+                                ? `/author/${authorId}`
+                                : "/author"
+                            }
                           >
                             <img
                               className="lazy"
@@ -299,27 +348,44 @@ const ItemDetails = () => {
 
                         <div className="author_list_info">
                           <Link
-                            to={authorId ? `/author/${authorId}` : "/author"}
+                            to={
+                              authorId
+                                ? `/author/${authorId}`
+                                : "/author"
+                            }
                           >
                             {authorName}
                           </Link>
                         </div>
+
                       </div>
                     </div>
 
                     <div className="spacer-40"></div>
 
-                    {/* PRICE */}
-                    <h6>Price</h6>
+                    {/* Price */}
+                    <div
+                      data-aos="fade-up"
+                      data-aos-delay="200"
+                    >
+                      <h6>Price</h6>
 
-                    <div className="nft-item-price">
-                      <img src={EthImage} alt="Ethereum" />
+                      <div className="nft-item-price">
+                        <img
+                          src={EthImage}
+                          alt="Ethereum"
+                        />
 
-                      <span>{item.price || 0} ETH</span>
+                        <span>
+                          {item.price || 0} ETH
+                        </span>
+                      </div>
                     </div>
+
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         </section>
