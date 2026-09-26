@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useKeenSlider } from "keen-slider/react";
-
 import "keen-slider/keen-slider.min.css";
 
 import AuthorImage from "../../images/author_thumbnail.jpg";
@@ -33,202 +31,192 @@ const HotCollections = () => {
     },
   });
 
+  // Fetch Hot Collections
   useEffect(() => {
     fetch(
-      "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections",
+      "https://us-central1-nft-cloud-functions.cloudfunctions.net/hotCollections"
     )
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to fetch Hot Collections");
+          throw new Error("Failed to fetch hot collections");
         }
 
         return response.json();
       })
       .then((data) => {
-        console.log("Hot Collections:", data);
+        console.log("Hot Collections API:", data);
 
         setCollections(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Hot Collections Error:", error);
+        console.error("Hot Collections API Error:", error);
+        setCollections([]);
         setLoading(false);
       });
   }, []);
 
-  const skeletonCards = [1, 2, 3, 4];
+  // Update slider after API data loads
+  useEffect(() => {
+    if (!loading && collections.length > 0) {
+      slider.current?.update();
+    }
+  }, [loading, collections, slider]);
 
   return (
     <section id="section-collections" className="no-bottom">
       <div className="container">
-        {/* TITLE */}
         <div className="row">
+          {/* TITLE */}
           <div className="col-lg-12">
             <div className="text-center">
               <h2>Hot Collections</h2>
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
-        </div>
 
-        {/* SKELETON */}
-        {loading && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-              gap: "20px",
-            }}
-          >
-            {skeletonCards.map((item) => (
-              <div key={item}>
-                <div
-                  style={{
-                    width: "100%",
-                    height: "250px",
-                    background: "#e5e5e5",
-                    borderRadius: "8px",
-                    animation: "hotSkeletonPulse 1.5s ease-in-out infinite",
-                  }}
-                ></div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "15px",
-                    paddingTop: "15px",
-                  }}
-                >
+          {/* SKELETON LOADING */}
+          {loading &&
+            new Array(6).fill(0).map((_, index) => (
+              <div
+                className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
+                key={`skeleton-${index}`}
+              >
+                <div className="nft_coll">
                   <div
+                    className="nft_wrap"
                     style={{
-                      width: "50px",
-                      height: "50px",
-                      minWidth: "50px",
-                      borderRadius: "50%",
+                      height: "250px",
                       background: "#e5e5e5",
+                      borderRadius: "8px",
+                      animation:
+                        "hotCollectionsSkeletonPulse 1.5s ease-in-out infinite",
                     }}
                   ></div>
 
-                  <div style={{ width: "100%" }}>
+                  <div
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      borderRadius: "50%",
+                      background: "#e5e5e5",
+                      marginTop: "-30px",
+                      marginLeft: "20px",
+                      position: "relative",
+                      zIndex: 2,
+                      animation:
+                        "hotCollectionsSkeletonPulse 1.5s ease-in-out infinite",
+                    }}
+                  ></div>
+
+                  <div style={{ padding: "15px 0" }}>
                     <div
                       style={{
-                        width: "70%",
+                        width: "60%",
                         height: "18px",
                         background: "#e5e5e5",
                         borderRadius: "4px",
                         marginBottom: "10px",
+                        animation:
+                          "hotCollectionsSkeletonPulse 1.5s ease-in-out infinite",
                       }}
                     ></div>
 
                     <div
                       style={{
-                        width: "40%",
+                        width: "35%",
                         height: "14px",
                         background: "#e5e5e5",
                         borderRadius: "4px",
+                        animation:
+                          "hotCollectionsSkeletonPulse 1.5s ease-in-out infinite",
                       }}
                     ></div>
                   </div>
                 </div>
               </div>
             ))}
-          </div>
-        )}
 
-        {/* KEEN SLIDER */}
-        {!loading && collections.length > 0 && (
-          <>
-            <div ref={sliderRef} className="keen-slider">
-              {collections.map((collection) => (
-                <div className="keen-slider__slide" key={collection.id}>
-                  <div className="nft_coll">
-                    {/* NFT IMAGE */}
-                    <div className="nft_wrap">
-                      <Link to="/item-details">
-                        <img
-                          src={collection.nftImage}
-                          className="img-fluid"
-                          alt={collection.title}
-                          style={{
-                            width: "100%",
-                            display: "block",
-                          }}
-                        />
-                      </Link>
-                    </div>
+          {/* KEEN SLIDER */}
+          {!loading && collections.length > 0 && (
+            <div className="col-lg-12">
+              <div ref={sliderRef} className="keen-slider">
+                {collections.map((collection) => (
+                  <div
+                    className="keen-slider__slide"
+                    key={collection.id}
+                  >
+                    <div className="nft_coll">
+                      {/* NFT IMAGE */}
+                      <div className="nft_wrap">
+                        <a
+                          href={
+                            collection.nftId
+                              ? `/item-details/${collection.nftId}`
+                              : "/item-details"
+                          }
+                        >
+                          <img
+                            src={collection.nftImage}
+                            className="lazy img-fluid"
+                            alt={collection.title || "NFT"}
+                          />
+                        </a>
+                      </div>
 
-                    {/* AUTHOR */}
-                    <div className="nft_coll_pp">
-                      <Link to="/author">
-                        <img
-                          className="pp-coll"
-                          src={collection.authorImage || AuthorImage}
-                          alt={collection.title}
-                        />
-                      </Link>
+                      {/* AUTHOR IMAGE */}
+                      <div className="nft_coll_pp">
+                        <a
+                          href={
+                            collection.authorId
+                              ? `/author/${collection.authorId}`
+                              : "/author"
+                          }
+                        >
+                          <img
+                            className="lazy pp-coll"
+                            src={
+                              collection.authorImage || AuthorImage
+                            }
+                            alt={
+                              collection.title
+                                ? `${collection.title} author`
+                                : "Author"
+                            }
+                          />
+                        </a>
 
-                      <i className="fa fa-check"></i>
-                    </div>
+                        <i className="fa fa-check"></i>
+                      </div>
 
-                    {/* INFO */}
-                    <div className="nft_coll_info">
-                      <Link to="/explore">
-                        <h4>{collection.title}</h4>
-                      </Link>
+                      {/* COLLECTION INFO */}
+                      <div className="nft_coll_info">
+                        <a href="/explore">
+                          <h4>{collection.title}</h4>
+                        </a>
 
-                      <span>ERC-{collection.code}</span>
+                        <span>ERC-{collection.code}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+          )}
 
-            {/* NAVIGATION */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "10px",
-                marginTop: "25px",
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => slider.current?.prev()}
-                style={{
-                  border: "none",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                }}
-              >
-                <i className="fa fa-chevron-left"></i>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => slider.current?.next()}
-                style={{
-                  border: "none",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                }}
-              >
-                <i className="fa fa-chevron-right"></i>
-              </button>
+          {/* NO RESULTS */}
+          {!loading && collections.length === 0 && (
+            <div className="col-lg-12 text-center">
+              <p>No hot collections found.</p>
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
 
       {/* SKELETON ANIMATION */}
       <style>
         {`
-          @keyframes hotSkeletonPulse {
+          @keyframes hotCollectionsSkeletonPulse {
             0% {
               opacity: 1;
             }
