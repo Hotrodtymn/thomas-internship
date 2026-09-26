@@ -1,7 +1,13 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 
-const AuthorItems = ({ items = [], loading, authorImage, authorId }) => {
+const AuthorItems = ({
+  items = [],
+  loading,
+  authorImage,
+  authorId,
+}) => {
   return (
     <div className="de_tab_content">
       <div className="tab-1">
@@ -59,8 +65,18 @@ const AuthorItems = ({ items = [], loading, authorImage, authorId }) => {
                 <div className="nft__item">
                   {/* Author */}
                   <div className="author_list_pp">
-                    <Link to={authorId ? `/author/${authorId}` : "/author"}>
-                      <img className="lazy" src={authorImage} alt="Author" />
+                    <Link
+                      to={
+                        authorId
+                          ? `/author/${authorId}`
+                          : "/author"
+                      }
+                    >
+                      <img
+                        className="lazy"
+                        src={authorImage}
+                        alt="Author"
+                      />
 
                       <i className="fa fa-check"></i>
                     </Link>
@@ -77,7 +93,7 @@ const AuthorItems = ({ items = [], loading, authorImage, authorId }) => {
 
                           {/* Facebook */}
                           <a
-                            href="#"
+                            href="https://www.facebook.com/"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="Share on Facebook"
@@ -87,7 +103,7 @@ const AuthorItems = ({ items = [], loading, authorImage, authorId }) => {
 
                           {/* X / Twitter */}
                           <a
-                            href="#"
+                            href="https://x.com/"
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label="Share on X"
@@ -96,14 +112,19 @@ const AuthorItems = ({ items = [], loading, authorImage, authorId }) => {
                           </a>
 
                           {/* Email */}
-                          <a href="#" aria-label="Share by email">
+                          <a
+                            href="mailto:?subject=Check out this NFT&body=Check out this NFT!"
+                            aria-label="Share by email"
+                          >
                             <i className="fa fa-envelope fa-lg"></i>
                           </a>
                         </div>
                       </div>
                     </div>
 
-                    <Link to={`/item-details/${item.nftId}`}>
+                    <Link
+                      to={`/item-details/${item.nftId}`}
+                    >
                       <img
                         src={item.nftImage}
                         className="lazy nft__item_preview"
@@ -114,11 +135,15 @@ const AuthorItems = ({ items = [], loading, authorImage, authorId }) => {
 
                   {/* NFT Information */}
                   <div className="nft__item_info">
-                    <Link to={`/item-details/${item.nftId}`}>
+                    <Link
+                      to={`/item-details/${item.nftId}`}
+                    >
                       <h4>{item.title}</h4>
                     </Link>
 
-                    <div className="nft__item_price">{item.price} ETH</div>
+                    <div className="nft__item_price">
+                      {item.price} ETH
+                    </div>
 
                     <div className="nft__item_like">
                       <i className="fa fa-heart"></i>
