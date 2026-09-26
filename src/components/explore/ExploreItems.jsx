@@ -139,36 +139,28 @@ const ExploreItems = () => {
             <div className="dropdown-menu">
               <button
                 className="dropdown-item"
-                onClick={() =>
-                  handleSort("default")
-                }
+                onClick={() => handleSort("default")}
               >
                 Default
               </button>
 
               <button
                 className="dropdown-item"
-                onClick={() =>
-                  handleSort("price-low")
-                }
+                onClick={() => handleSort("price-low")}
               >
                 Price: Low to High
               </button>
 
               <button
                 className="dropdown-item"
-                onClick={() =>
-                  handleSort("price-high")
-                }
+                onClick={() => handleSort("price-high")}
               >
                 Price: High to Low
               </button>
 
               <button
                 className="dropdown-item"
-                onClick={() =>
-                  handleSort("likes")
-                }
+                onClick={() => handleSort("likes")}
               >
                 Most Likes
               </button>
@@ -211,11 +203,7 @@ const ExploreItems = () => {
                   }}
                 ></div>
 
-                <div
-                  style={{
-                    paddingTop: "20px",
-                  }}
-                >
+                <div style={{ paddingTop: "20px" }}>
                   <div
                     style={{
                       width: "70%",
@@ -245,9 +233,7 @@ const ExploreItems = () => {
             <div
               key={item.id}
               data-aos="fade-up"
-              data-aos-delay={
-                (index % 4) * 75
-              }
+              data-aos-delay={(index % 4) * 75}
               style={{
                 width: "100%",
                 minWidth: 0,
@@ -283,30 +269,36 @@ const ExploreItems = () => {
                 <div className="nft__item_wrap">
                   <div className="nft__item_extra">
                     <div className="nft__item_buttons">
-                      <button>
-                        Buy Now
-                      </button>
+                      <button>Buy Now</button>
 
                       <div className="nft__item_share">
                         <h4>Share</h4>
 
+                        {/* Facebook */}
                         <a
                           href="https://www.facebook.com/"
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
+                          aria-label="Share on Facebook"
                         >
                           <i className="fa fa-facebook fa-lg"></i>
                         </a>
 
+                        {/* X / Twitter */}
                         <a
-                          href="https://twitter.com/"
+                          href="https://x.com/"
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
+                          aria-label="Share on X"
                         >
                           <i className="fa fa-twitter fa-lg"></i>
                         </a>
 
-                        <a href="mailto:">
+                        {/* Email */}
+                        <a
+                          href="mailto:?subject=Check out this NFT&body=Check out this NFT!"
+                          aria-label="Share by email"
+                        >
                           <i className="fa fa-envelope fa-lg"></i>
                         </a>
                       </div>
@@ -319,9 +311,7 @@ const ExploreItems = () => {
                     <img
                       src={item.nftImage}
                       className="lazy nft__item_preview"
-                      alt={
-                        item.title || "NFT"
-                      }
+                      alt={item.title || "NFT"}
                     />
                   </Link>
                 </div>
@@ -340,6 +330,7 @@ const ExploreItems = () => {
 
                   <div className="nft__item_like">
                     <i className="fa fa-heart"></i>
+
                     <span>
                       {item.likes || 0}
                     </span>
@@ -353,9 +344,7 @@ const ExploreItems = () => {
                     }}
                   >
                     <i className="fa fa-clock-o"></i>{" "}
-                    {getCountdown(
-                      item.expiryDate
-                    )}
+                    {getCountdown(item.expiryDate)}
                   </div>
                 </div>
               </div>
@@ -379,8 +368,7 @@ const ExploreItems = () => {
 
       {/* Load More */}
       {!loading &&
-        visibleCount <
-          sortedItems.length && (
+        visibleCount < sortedItems.length && (
           <div
             className="text-center"
             data-aos="fade-up"
@@ -393,8 +381,7 @@ const ExploreItems = () => {
               className="btn-main"
               onClick={() =>
                 setVisibleCount(
-                  (current) =>
-                    current + 8
+                  (current) => current + 8
                 )
               }
             >

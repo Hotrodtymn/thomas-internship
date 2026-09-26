@@ -14,10 +14,12 @@ const NewItems = () => {
   const [sliderRef, slider] = useKeenSlider({
     loop: true,
     mode: "snap",
+
     slides: {
       perView: 4,
       spacing: 20,
     },
+
     breakpoints: {
       "(max-width: 991px)": {
         slides: {
@@ -25,6 +27,7 @@ const NewItems = () => {
           spacing: 20,
         },
       },
+
       "(max-width: 575px)": {
         slides: {
           perView: 1,
@@ -34,6 +37,7 @@ const NewItems = () => {
     },
   });
 
+  // Fetch New Items API
   useEffect(() => {
     fetch(
       "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems"
@@ -57,6 +61,7 @@ const NewItems = () => {
       });
   }, []);
 
+  // Countdown timer
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(Date.now());
@@ -65,12 +70,14 @@ const NewItems = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Update Keen Slider after API data loads
   useEffect(() => {
     if (!loading && items.length > 0) {
       slider.current?.update();
     }
   }, [loading, items, slider]);
 
+  // Countdown
   const formatCountdown = (expiryDate) => {
     if (!expiryDate) {
       return "No expiration";
@@ -82,15 +89,22 @@ const NewItems = () => {
       return "Expired";
     }
 
-    const totalSeconds = Math.floor(difference / 1000);
+    const totalSeconds = Math.floor(
+      difference / 1000
+    );
 
-    const days = Math.floor(totalSeconds / 86400);
+    const days = Math.floor(
+      totalSeconds / 86400
+    );
+
     const hours = Math.floor(
       (totalSeconds % 86400) / 3600
     );
+
     const minutes = Math.floor(
       (totalSeconds % 3600) / 60
     );
+
     const seconds = totalSeconds % 60;
 
     if (days > 0) {
@@ -104,11 +118,11 @@ const NewItems = () => {
     <section id="section-items" className="no-bottom">
       <div className="container">
         <div className="row">
-
           {/* TITLE */}
           <div className="col-lg-12">
             <div className="text-center">
               <h2>New Items</h2>
+
               <div className="small-border bg-color-2"></div>
             </div>
           </div>
@@ -118,10 +132,9 @@ const NewItems = () => {
             new Array(7).fill(0).map((_, index) => (
               <div
                 className="col-lg-3 col-md-6 col-sm-6 col-xs-12"
-                key={index}
+                key={`skeleton-${index}`}
               >
                 <div className="nft__item">
-
                   <div
                     style={{
                       width: "50px",
@@ -145,8 +158,11 @@ const NewItems = () => {
                     }}
                   ></div>
 
-                  <div style={{ paddingTop: "20px" }}>
-
+                  <div
+                    style={{
+                      paddingTop: "20px",
+                    }}
+                  >
                     <div
                       style={{
                         width: "65%",
@@ -181,7 +197,6 @@ const NewItems = () => {
                           "newItemsSkeletonPulse 1.5s ease-in-out infinite",
                       }}
                     ></div>
-
                   </div>
                 </div>
               </div>
@@ -194,18 +209,20 @@ const NewItems = () => {
                 ref={sliderRef}
                 className="keen-slider"
               >
-
                 {items.map((item) => (
                   <div
                     className="keen-slider__slide"
                     key={item.id}
                   >
                     <div className="nft__item">
-
                       {/* AUTHOR */}
                       <div className="author_list_pp">
                         <Link
-                          to={`/author/${item.authorId}`}
+                          to={
+                            item.authorId
+                              ? `/author/${item.authorId}`
+                              : "/author"
+                          }
                           data-bs-toggle="tooltip"
                           data-bs-placement="top"
                           title="Creator"
@@ -235,10 +252,8 @@ const NewItems = () => {
 
                       {/* NFT IMAGE */}
                       <div className="nft__item_wrap">
-
                         <div className="nft__item_extra">
                           <div className="nft__item_buttons">
-
                             <button>
                               Buy Now
                             </button>
@@ -246,31 +261,44 @@ const NewItems = () => {
                             <div className="nft__item_share">
                               <h4>Share</h4>
 
+                              {/* Facebook */}
                               <a
-                                href=""
+                                href="https://www.facebook.com/"
                                 target="_blank"
-                                rel="noreferrer"
+                                rel="noopener noreferrer"
+                                aria-label="Share on Facebook"
                               >
                                 <i className="fa fa-facebook fa-lg"></i>
                               </a>
 
+                              {/* X / Twitter */}
                               <a
-                                href=""
+                                href="https://x.com/"
                                 target="_blank"
-                                rel="noreferrer"
+                                rel="noopener noreferrer"
+                                aria-label="Share on X"
                               >
                                 <i className="fa fa-twitter fa-lg"></i>
                               </a>
 
-                              <a href="">
+                              {/* Email */}
+                              <a
+                                href="mailto:?subject=Check out this NFT&body=Check out this NFT!"
+                                aria-label="Share by email"
+                              >
                                 <i className="fa fa-envelope fa-lg"></i>
                               </a>
-
                             </div>
                           </div>
                         </div>
 
-                        <Link to="/item-details">
+                        <Link
+                          to={
+                            item.nftId
+                              ? `/item-details/${item.nftId}`
+                              : "/item-details"
+                          }
+                        >
                           <img
                             src={
                               item.nftImage ||
@@ -283,40 +311,45 @@ const NewItems = () => {
                             }
                           />
                         </Link>
-
                       </div>
 
                       {/* NFT INFORMATION */}
                       <div className="nft__item_info">
-
-                        <Link to="/item-details">
-                          <h4>
-                            {item.title}
-                          </h4>
+                        <Link
+                          to={
+                            item.nftId
+                              ? `/item-details/${item.nftId}`
+                              : "/item-details"
+                          }
+                        >
+                          <h4>{item.title}</h4>
                         </Link>
 
                         <div className="nft__item_price">
-                          {item.price} ETH
+                          {item.price || 0} ETH
                         </div>
 
                         <div className="nft__item_like">
                           <i className="fa fa-heart"></i>
 
                           <span>
-                            {item.likes}
+                            {item.likes || 0}
                           </span>
                         </div>
-
                       </div>
-
                     </div>
                   </div>
                 ))}
-
               </div>
             </div>
           )}
 
+          {/* NO ITEMS */}
+          {!loading && items.length === 0 && (
+            <div className="col-lg-12 text-center">
+              <p>No new items found.</p>
+            </div>
+          )}
         </div>
       </div>
 
