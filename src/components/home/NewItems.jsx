@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
@@ -35,9 +34,7 @@ const NewItems = () => {
 
   // Fetch New Items API
   useEffect(() => {
-    fetch(
-      "https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems"
-    )
+    fetch("https://us-central1-nft-cloud-functions.cloudfunctions.net/newItems")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to fetch new items");
@@ -75,9 +72,10 @@ const NewItems = () => {
   }, [loading, items, slider]);
 
   // Countdown
+  // Countdown
   const formatCountdown = (expiryDate) => {
     if (!expiryDate) {
-      return "No expiration";
+      return "";
     }
 
     const difference = Number(expiryDate) - currentTime;
@@ -103,7 +101,6 @@ const NewItems = () => {
     <section id="section-items" className="no-bottom">
       <div className="container">
         <div className="row">
-
           {/* TITLE */}
           <div className="col-lg-12">
             <div className="text-center">
@@ -120,7 +117,6 @@ const NewItems = () => {
                 key={`skeleton-${index}`}
               >
                 <div className="nft__item">
-
                   {/* Author Skeleton */}
                   <div
                     style={{
@@ -191,14 +187,9 @@ const NewItems = () => {
           {!loading && items.length > 0 && (
             <div className="col-lg-12">
               <div ref={sliderRef} className="keen-slider">
-
                 {items.map((item) => (
-                  <div
-                    className="keen-slider__slide"
-                    key={item.id}
-                  >
+                  <div className="keen-slider__slide" key={item.id}>
                     <div className="nft__item">
-
                       {/* AUTHOR */}
                       <div className="author_list_pp">
                         <a
@@ -213,14 +204,8 @@ const NewItems = () => {
                         >
                           <img
                             className="lazy"
-                            src={
-                              item.authorImage || AuthorImage
-                            }
-                            alt={
-                              item.title
-                                ? `${item.title} author`
-                                : "Author"
-                            }
+                            src={item.authorImage || AuthorImage}
+                            alt={item.title ? `${item.title} author` : "Author"}
                           />
 
                           <i className="fa fa-check"></i>
@@ -235,11 +220,8 @@ const NewItems = () => {
                       {/* NFT IMAGE */}
                       <div className="nft__item_wrap">
                         <div className="nft__item_extra">
-
                           <div className="nft__item_buttons">
-                            <button type="button">
-                              Buy Now
-                            </button>
+                            <button type="button">Buy Now</button>
 
                             <div className="nft__item_share">
                               <h4>Share</h4>
@@ -293,7 +275,6 @@ const NewItems = () => {
 
                       {/* NFT INFORMATION */}
                       <div className="nft__item_info">
-
                         <a
                           href={
                             item.nftId
@@ -311,16 +292,12 @@ const NewItems = () => {
                         <div className="nft__item_like">
                           <i className="fa fa-heart"></i>
 
-                          <span>
-                            {item.likes || 0}
-                          </span>
+                          <span>{item.likes || 0}</span>
                         </div>
-
                       </div>
                     </div>
                   </div>
                 ))}
-
               </div>
             </div>
           )}
@@ -331,7 +308,6 @@ const NewItems = () => {
               <p>No new items found.</p>
             </div>
           )}
-
         </div>
       </div>
 
