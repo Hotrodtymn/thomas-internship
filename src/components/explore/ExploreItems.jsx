@@ -6,6 +6,7 @@ const ExploreItems = () => {
   const [visibleCount, setVisibleCount] = useState(8);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("default");
+  const [sortOpen, setSortOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(
     Math.floor(Date.now() / 1000)
   );
@@ -28,9 +29,10 @@ const ExploreItems = () => {
 
         console.log("Explore API:", data);
 
-        setItems(data);
+        setItems(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Explore API Error:", error);
+        setItems([]);
       } finally {
         setLoading(false);
       }
@@ -39,7 +41,7 @@ const ExploreItems = () => {
     getExploreItems();
   }, []);
 
-  // Unix countdown timer
+  // Countdown timer
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(Math.floor(Date.now() / 1000));
@@ -73,31 +75,28 @@ const ExploreItems = () => {
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   };
 
-  // Sorting
+  // Sort items
   const getSortedItems = () => {
     const sorted = [...items];
 
-    if (sortBy === "price-low") {
+    if (sortBy === "highest") {
       sorted.sort(
         (a, b) =>
-          Number(a.price || 0) -
-          Number(b.price || 0)
+          Number(b.price || 0) - Number(a.price || 0)
       );
     }
 
-    if (sortBy === "price-high") {
+    if (sortBy === "lowest") {
       sorted.sort(
         (a, b) =>
-          Number(b.price || 0) -
-          Number(a.price || 0)
+          Number(a.price || 0) - Number(b.price || 0)
       );
     }
 
-    if (sortBy === "likes") {
+    if (sortBy === "liked") {
       sorted.sort(
         (a, b) =>
-          Number(b.likes || 0) -
-          Number(a.likes || 0)
+          Number(b.likes || 0) - Number(a.likes || 0)
       );
     }
 
@@ -106,19 +105,35 @@ const ExploreItems = () => {
 
   const sortedItems = getSortedItems();
 
-  const visibleItems = sortedItems.slice(
-    0,
-    visibleCount
-  );
+  const visibleItems = sortedItems.slice(0, visibleCount);
 
+  // Sort selection
   const handleSort = (value) => {
     setSortBy(value);
     setVisibleCount(8);
+    setSortOpen(false);
+  };
+
+  // Button label
+  const getSortLabel = () => {
+    if (sortBy === "highest") {
+      return "Highest to Lowest";
+    }
+
+    if (sortBy === "lowest") {
+      return "Lowest to Highest";
+    }
+
+    if (sortBy === "liked") {
+      return "Most Liked";
+    }
+
+    return "Sort";
   };
 
   return (
     <div style={{ width: "100%" }}>
-      {/* Filter */}
+      {/* SORT */}
       <div
         style={{
           width: "100%",
@@ -126,46 +141,132 @@ const ExploreItems = () => {
         }}
         data-aos="fade-up"
       >
-        <div className="items_filter">
-          <div className="dropdown">
-            <button
-              className="btn-main dropdown-toggle"
-              type="button"
-              data-toggle="dropdown"
-            >
-              Sort
-            </button>
+        <div
+          style={{
+            position: "relative",
+            display: "inline-block",
+          }}
+        >
+          {/* SORT BUTTON */}
+          <button
+            type="button"
+            onClick={() => setSortOpen(!sortOpen)}
+            className="btn-main"
+            style={{
+              minWidth: "180px",
+              cursor: "pointer",
+            }}
+          >
+            {getSortLabel()}
+            <i
+              className={`fa ${
+                sortOpen ? "fa-angle-up" : "fa-angle-down"
+              }`}
+              style={{ marginLeft: "10px" }}
+            ></i>
+          </button>
 
-            <div className="dropdown-menu">
+          {/* SORT MENU */}
+          {sortOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                marginTop: "8px",
+                minWidth: "180px",
+                background: "#ffffff",
+                borderRadius: "5px",
+                boxShadow: "0 5px 20px rgba(0, 0, 0, 0.15)",
+                zIndex: 9999,
+                overflow: "hidden",
+              }}
+            >
+              {/* HIGHEST */}
               <button
-                className="dropdown-item"
+                type="button"
+                onClick={() => handleSort("highest")}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 15px",
+                  border: "none",
+                  background:
+                    sortBy === "highest"
+                      ? "#f1f1f1"
+                      : "#ffffff",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                }}
+              >
+                Highest to Lowest
+              </button>
+
+              {/* LOWEST */}
+              <button
+                type="button"
+                onClick={() => handleSort("lowest")}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 15px",
+                  border: "none",
+                  background:
+                    sortBy === "lowest"
+                      ? "#f1f1f1"
+                      : "#ffffff",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                }}
+              >
+                Lowest to Highest
+              </button>
+
+              {/* MOST LIKED */}
+              <button
+                type="button"
+                onClick={() => handleSort("liked")}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 15px",
+                  border: "none",
+                  background:
+                    sortBy === "liked"
+                      ? "#f1f1f1"
+                      : "#ffffff",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                }}
+              >
+                Most Liked
+              </button>
+
+              {/* DEFAULT */}
+              <button
+                type="button"
                 onClick={() => handleSort("default")}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 15px",
+                  border: "none",
+                  background:
+                    sortBy === "default"
+                      ? "#f1f1f1"
+                      : "#ffffff",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                }}
               >
                 Default
               </button>
-
-              <button
-                className="dropdown-item"
-                onClick={() => handleSort("price-low")}
-              >
-                Price: Low to High
-              </button>
-
-              <button
-                className="dropdown-item"
-                onClick={() => handleSort("price-high")}
-              >
-                Price: High to Low
-              </button>
-
-              <button
-                className="dropdown-item"
-                onClick={() => handleSort("likes")}
-              >
-                Most Likes
-              </button>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -174,60 +275,57 @@ const ExploreItems = () => {
         className="explore-nft-grid"
         style={{
           display: "grid",
-          gridTemplateColumns:
-            "repeat(4, minmax(0, 1fr))",
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
           gap: "30px",
           width: "100%",
         }}
       >
-        {/* Skeleton Loading */}
+        {/* SKELETON */}
         {loading &&
-          Array.from({ length: 8 }).map(
-            (_, index) => (
+          Array.from({ length: 8 }).map((_, index) => (
+            <div
+              key={`skeleton-${index}`}
+              className="nft__item"
+              style={{
+                width: "100%",
+                margin: 0,
+              }}
+            >
               <div
-                key={`skeleton-${index}`}
-                className="nft__item"
                 style={{
                   width: "100%",
-                  margin: 0,
+                  height: "250px",
+                  background: "#e5e5e5",
+                  borderRadius: "8px",
+                  animation:
+                    "exploreSkeletonPulse 1.5s ease-in-out infinite",
                 }}
-              >
+              ></div>
+
+              <div style={{ paddingTop: "20px" }}>
                 <div
                   style={{
-                    width: "100%",
-                    height: "250px",
+                    width: "70%",
+                    height: "18px",
                     background: "#e5e5e5",
-                    borderRadius: "8px",
-                    animation:
-                      "exploreSkeletonPulse 1.5s ease-in-out infinite",
+                    borderRadius: "4px",
+                    marginBottom: "12px",
                   }}
                 ></div>
 
-                <div style={{ paddingTop: "20px" }}>
-                  <div
-                    style={{
-                      width: "70%",
-                      height: "18px",
-                      background: "#e5e5e5",
-                      borderRadius: "4px",
-                      marginBottom: "12px",
-                    }}
-                  ></div>
-
-                  <div
-                    style={{
-                      width: "40%",
-                      height: "14px",
-                      background: "#e5e5e5",
-                      borderRadius: "4px",
-                    }}
-                  ></div>
-                </div>
+                <div
+                  style={{
+                    width: "40%",
+                    height: "14px",
+                    background: "#e5e5e5",
+                    borderRadius: "4px",
+                  }}
+                ></div>
               </div>
-            )
-          )}
+            </div>
+          ))}
 
-        {/* NFT Cards */}
+        {/* NFT CARDS */}
         {!loading &&
           visibleItems.map((item, index) => (
             <div
@@ -246,7 +344,7 @@ const ExploreItems = () => {
                   margin: 0,
                 }}
               >
-                {/* Author */}
+                {/* AUTHOR */}
                 <div className="author_list_pp">
                   <Link
                     to={
@@ -265,16 +363,17 @@ const ExploreItems = () => {
                   </Link>
                 </div>
 
-                {/* NFT Image */}
+                {/* NFT IMAGE */}
                 <div className="nft__item_wrap">
                   <div className="nft__item_extra">
                     <div className="nft__item_buttons">
-                      <button>Buy Now</button>
+                      <button type="button">
+                        Buy Now
+                      </button>
 
                       <div className="nft__item_share">
                         <h4>Share</h4>
 
-                        {/* Facebook */}
                         <a
                           href="https://www.facebook.com/"
                           target="_blank"
@@ -284,7 +383,6 @@ const ExploreItems = () => {
                           <i className="fa fa-facebook fa-lg"></i>
                         </a>
 
-                        {/* X / Twitter */}
                         <a
                           href="https://x.com/"
                           target="_blank"
@@ -294,7 +392,6 @@ const ExploreItems = () => {
                           <i className="fa fa-twitter fa-lg"></i>
                         </a>
 
-                        {/* Email */}
                         <a
                           href="mailto:?subject=Check out this NFT&body=Check out this NFT!"
                           aria-label="Share by email"
@@ -316,7 +413,7 @@ const ExploreItems = () => {
                   </Link>
                 </div>
 
-                {/* NFT Information */}
+                {/* NFT INFORMATION */}
                 <div className="nft__item_info">
                   <Link
                     to={`/item-details/${item.nftId}`}
@@ -336,7 +433,7 @@ const ExploreItems = () => {
                     </span>
                   </div>
 
-                  {/* Countdown */}
+                  {/* COUNTDOWN */}
                   <div
                     style={{
                       marginTop: "10px",
@@ -352,45 +449,42 @@ const ExploreItems = () => {
           ))}
       </div>
 
-      {/* No Results */}
-      {!loading &&
-        visibleItems.length === 0 && (
-          <div
-            className="text-center"
-            style={{
-              width: "100%",
-              marginTop: "30px",
-            }}
-          >
-            <p>No NFTs found.</p>
-          </div>
-        )}
+      {/* NO RESULTS */}
+      {!loading && visibleItems.length === 0 && (
+        <div
+          className="text-center"
+          style={{
+            width: "100%",
+            marginTop: "30px",
+          }}
+        >
+          <p>No NFTs found.</p>
+        </div>
+      )}
 
-      {/* Load More */}
-      {!loading &&
-        visibleCount < sortedItems.length && (
-          <div
-            className="text-center"
-            data-aos="fade-up"
-            style={{
-              width: "100%",
-              marginTop: "40px",
-            }}
+      {/* LOAD MORE */}
+      {!loading && visibleCount < sortedItems.length && (
+        <div
+          className="text-center"
+          data-aos="fade-up"
+          style={{
+            width: "100%",
+            marginTop: "40px",
+          }}
+        >
+          <button
+            className="btn-main"
+            type="button"
+            onClick={() =>
+              setVisibleCount((current) => current + 8)
+            }
           >
-            <button
-              className="btn-main"
-              onClick={() =>
-                setVisibleCount(
-                  (current) => current + 8
-                )
-              }
-            >
-              Load More
-            </button>
-          </div>
-        )}
+            Load More
+          </button>
+        </div>
+      )}
 
-      {/* Responsive Grid */}
+      {/* STYLES */}
       <style>
         {`
           @keyframes exploreSkeletonPulse {
